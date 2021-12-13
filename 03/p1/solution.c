@@ -12,35 +12,37 @@ do { \
 } while (0);
 
 int solution(int *xs, size_t len, size_t bits) {
+    // this will store the counts for each bit column in xs
+    // - positive values map to the most common bit being one
+    // - negative values map to the most common bit being zero
     int *counts = calloc(bits, sizeof(int));
 
     for (size_t i = 0; i < len; i++) {
         int x = xs[i];
 
+        // iterate over the binary number
         for (size_t bit = 0; bit < bits; bit++) {
-            if ((x >> bit) & 1) {
+            if ((x >> bit) & 1) { // if the current bit is one
                 counts[bit]++;
             }
-            else {
+            else {  // if the current bit is zero
                 counts[bit]--;
             }
-            DISPLAY_BUFFER(counts, bits);
         }
     }
 
-    DISPLAY_BUFFER(counts, bits);
     int gamma = 0, epsilon = 0;
-    for (int bit = bits - 1; bit >= 0; bit--) {
-        printf("counts[%d] = %d\n", bit, counts[bit]);
+    for (size_t bit = 0; bit < bits; bit++) {
         if (counts[bit] > 0) {
+            // add one to gamma[bit]
             gamma = (1 << bit) | gamma;
         }
         else if (counts[bit] < 0) {
+            // add one to epsilon[bit]
             epsilon = (1 << bit) | epsilon;
         }
     }
 
-    printf("gamma: %d, epsilon: %d\n", gamma, epsilon);
     free(counts);
     return gamma * epsilon;
 }
